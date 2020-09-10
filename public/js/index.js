@@ -39,7 +39,6 @@ if (userDataForm) {
         form.append('email', document.getElementById('email').value);
         // As we only have a single file that can be uploaded we need to select the first element in the array
         form.append('photo', document.getElementById('photo').files[0]);
-        console.log(form);
         updateSettings(form, 'data');
     });
 }
