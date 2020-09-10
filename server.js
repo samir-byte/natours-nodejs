@@ -40,3 +40,11 @@ process.on('unhandledRejection', (err) => {
         process.exit(1); // '0' for success, '1' for fail.
     });
 });
+
+// SIGTERM is a signal sent to cause a program to stop running. Used by Heroku in this case
+process.on('SIGTERM', () => {
+    console.log('👋🏼 SIGTERM RECEIVED. Shutting down gracefully');
+    server.close(() => {
+        console.log('PROCESS TERMINATED 👍🏼');
+    });
+});

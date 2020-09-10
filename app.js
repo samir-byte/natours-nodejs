@@ -25,6 +25,8 @@ const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
 
+app.enable('trust proxy');
+
 // Set PUG as template engine
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views')); // Prevents bugs with '/' in the pathname
