@@ -13,6 +13,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 /**** USER-CREATED MODULES ****/
 const AppError = require('./utils/appError');
@@ -33,6 +34,18 @@ app.set('views', path.join(__dirname, 'views')); // Prevents bugs with '/' in th
 
 /**** GLOBAL MIDDLEWARE *****/
 // These are middleware functions that will be run on all requests as no specific route has been declared.
+// Implement CORS (Cross-Origin Resource Sharing)
+// Access-Control-Allow-Origin *
+app.use(cors());
+// Specify the domains which can generate requests
+/* app.use(cors({
+    origin: 'https://wwwnatours.com'
+})); */
+
+// Can apply to all or a specific route
+app.options('*', cors());
+// app.options('/api.v1.tours/:id', cors());
+
 
 // Serving static files on the web
 app.use(express.static(path.join(__dirname, 'public')));
