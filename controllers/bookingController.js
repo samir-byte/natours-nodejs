@@ -105,7 +105,8 @@ exports.webhookCheckout = (req, res, next) => {
 
     if (event.type === 'checkout.session.completed') {
         const sli = sessionLineItems(event);
-        createBookingCheckout(event.data.object, sli);
+        console.log(sli);
+        //createBookingCheckout(event.data.object, sli);
     }
 
     res.status(200).json({ received: true });
