@@ -22,20 +22,29 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
         mode: 'payment',
         line_items: [
             {
-                name: `${tour.name} Tour`,
-                description: tour.summary,
-                images: [
-                    `${req.protocol}://${req.get('host')}/img/tours/${
-                        tour.imageCover
-                    }`
-                ],
+                //name: `${tour.name} Tour`,
+                //description: tour.summary,
+                //images: [
+                //    `${req.protocol}://${req.get('host')}/img/tours/${
+                //        tour.imageCover
+                //    }`
+                //],
                 //amount: tour.price * 100,
+                //currency: 'usd',
+                quantity: 1,
                 price_data: {
+                    product_data: {
+                        name: `${tour.name} Tour`,
+                        description: tour.summary,
+                        images: [
+                            `${req.protocol}://${req.get('host')}/img/tours/${
+                                tour.imageCover
+                            }`
+                        ]
+                    },
                     currency: 'usd',
                     unit_amount: tour.price * 100
-                },
-                //currency: 'usd',
-                quantity: 1
+                }
             }
         ]
     });
