@@ -77,8 +77,7 @@ const sessionLineItems = async (e) => {
         expand: ['line_items']
     });
     //console.log(li.line_items);
-    console.log(li.line_items.data[0].amount_total / 100);
-    return li;
+    return li.line_items.data[0];
 };
 
 const createBookingCheckout = async (session, sli) => {
@@ -86,7 +85,8 @@ const createBookingCheckout = async (session, sli) => {
     const user = (await User.findOne({ email: session.customer_email })).id;
     //const price = session.display_items[0].amount / 100;
     //const price = sli.line_items.data[0].amount_total / 100;
-    await Booking.create({ tour, user /*, price */ });
+    const price = sli.amount_total / 100;
+    await Booking.create({ tour, user, price });
 };
 
 exports.webhookCheckout = (req, res, next) => {
@@ -105,8 +105,6 @@ exports.webhookCheckout = (req, res, next) => {
 
     if (event.type === 'checkout.session.completed') {
         const sli = sessionLineItems(event);
-        console.log(sli);
-        console.log(sli.line_items.data[0].amount_total / 100);
         createBookingCheckout(event.data.object, sli);
     }
 
