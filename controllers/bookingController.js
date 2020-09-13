@@ -80,7 +80,7 @@ exports.webhookCheckout = (req, res, next) => {
     }
 
     if (event.type === 'checkout.session.completed') {
-        const lineItems = stripe.checkout.line_items;
+        const lineItems = stripe.checkout.sessions.listLineItems;
         console.log(lineItems);
         createBookingCheckout(event.data.object, lineItems);
     }
