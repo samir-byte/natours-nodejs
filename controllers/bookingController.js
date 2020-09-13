@@ -73,21 +73,19 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
 });
 */
 
+const sessionLineItems = async (e) => {
+    const li = await stripe.checkout.sessions.retrieve(e.data.object.id, {
+        expand: ['line_items']
+    });
+    console.log(li);
+    console.log('line_items.amount', li.line_items.amount);
+    console.log('line_items[0].amount', li.line_items[0].amount);
+};
+
 const createBookingCheckout = async (session) => {
     const tour = session.client_reference_id;
     const user = (await User.findOne({ email: session.customer_email })).id;
-
-    const sessionLineItems = await stripe.checkout.sessions.retrieve(
-        session.id,
-        {
-            expand: ['line_items']
-        }
-    );
-    console.log(sessionLineItems);
-    console.log(sessionLineItems.data[0].amount);
-
-    const price = sessionLineItems.data[0].amount / 100;
-    //const price = session.display_items[0].amount / 100;
+    const price = session.display_items[0].amount / 100;
     await Booking.create({ tour, user, price });
 };
 
@@ -105,8 +103,10 @@ exports.webhookCheckout = (req, res, next) => {
         return res.status(400).send(`Webhook error: ${err.message}`);
     }
 
-    if (event.type === 'checkout.session.completed')
+    if (event.type === 'checkout.session.completed') {
+        sessionLineItems(event);
         createBookingCheckout(event.data.object);
+    }
 
     res.status(200).json({ received: true });
 };
