@@ -76,8 +76,8 @@ const sessionLineItems = async (e) => {
     const li = await stripe.checkout.sessions.retrieve(e.data.object.id, {
         expand: ['line_items']
     });
-    console.log(li);
-    console.log('line_items', li.line_items);
+    //console.log(li.line_items);
+    console.log(li.line_items.data[0].amount_total / 100);
 };
 
 const createBookingCheckout = async (session) => {
