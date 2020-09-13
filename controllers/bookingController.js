@@ -50,7 +50,6 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
             }
         ]
     });
-    console.log(session);
 
     // 3) Create session as response
     res.status(200).json({
@@ -78,8 +77,7 @@ const sessionLineItems = async (e) => {
         expand: ['line_items']
     });
     console.log(li);
-    console.log('line_items.amount', li.line_items.amount);
-    console.log('line_items[0].amount', li.line_items[0].amount);
+    console.log('line_items', li.line_items);
 };
 
 const createBookingCheckout = async (session) => {
