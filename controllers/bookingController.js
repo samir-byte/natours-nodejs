@@ -72,12 +72,12 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
 });
 */
 
-const sessionLineItems = async (e) => {
-    const li = await stripe.checkout.sessions.retrieve(e.data.object.id, {
+const sessionLineItems = async (event) => {
+    const li = await stripe.checkout.sessions.retrieve(event.data.object.id, {
         expand: ['line_items']
     });
-    //console.log(li.line_items);
-    return li.line_items.data[0];
+    const lineItemDataObj = li.line_items.data[0];
+    return lineItemDataObj;
 };
 
 const createBookingCheckout = async (session, sli) => {
