@@ -89,7 +89,7 @@ const createBookingCheckout = async (session, sli) => {
     await Booking.create({ tour, user, price });
 };
 
-exports.webhookCheckout = (req, res, next) => {
+exports.webhookCheckout = async (req, res, next) => {
     const signature = req.headers['stripe-signature'];
 
     let event;
@@ -104,7 +104,7 @@ exports.webhookCheckout = (req, res, next) => {
     }
 
     if (event.type === 'checkout.session.completed') {
-        const sli = sessionLineItems(event);
+        const sli = await sessionLineItems(event);
         createBookingCheckout(event.data.object, sli);
     }
 
