@@ -12,6 +12,12 @@ exports.alerts = (req, res, next) => {
     next();
 };
 
+exports.getSignupForm = (req, res, next) => {
+    res.status(200).render('signup', {
+        title: 'Signup'
+    });
+};
+
 exports.getLoginForm = (req, res, next) => {
     res.status(200).render('login', {
         title: 'Login'

@@ -4,9 +4,11 @@ import { displayMap } from './mapbox';
 import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
 import { showAlert } from './alerts';
+import { signup } from './signup';
 
 // DOM Elements
 const mapBox = document.getElementById('map');
+const signupForm = document.querySelector('.form--signup');
 const loginForm = document.querySelector('.form--login');
 const logoutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
@@ -17,6 +19,18 @@ const bookBtn = document.getElementById('book-tour');
 if (mapBox) {
     const locations = JSON.parse(mapBox.dataset.locations);
     displayMap(locations);
+}
+
+if (signupForm) {
+    signupForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const passwordConfirm = document.getElementById('password-confirm')
+            .value;
+        signup(name, email, password, passwordConfirm);
+    });
 }
 
 if (loginForm) {
