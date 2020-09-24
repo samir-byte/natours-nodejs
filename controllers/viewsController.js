@@ -3,6 +3,7 @@ const User = require('../models/userModel');
 const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const Review = require('../models/reviewModel');
 
 exports.alerts = (req, res, next) => {
     const { alert } = req.query;
@@ -102,5 +103,35 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
     res.status(200).render('account', {
         title: 'Your account',
         user: updatedUser
+    });
+});
+
+exports.getMyReviews = catchAsync(async (req, res, next) => {
+    const userId = res.locals.user.id;
+
+    // 1) Find all tours and reviews for logged in user
+    const reviews = await Review.find({ user: userId });
+
+    // 2) Create array of tourIds the user has reviewed
+    const tourIds = reviews.map((el) => el.tour);
+
+    // 3) Retrieve the tour information for reviewed tours
+    const tours = await Tour.find({ _id: tourIds }).populate({
+        path: 'reviews'
+    });
+
+    tours.forEach((el) => {
+        let i = 0;
+        for (i = 0; i < el.reviews.length; i += 1)
+            if (el.reviews[i].user.id === userId) {
+                el.reviews = el.reviews[i];
+                return el.reviews;
+            }
+    });
+
+    res.status(200).render('reviews', {
+        title: 'My reviews',
+        reviews,
+        tours
     });
 });

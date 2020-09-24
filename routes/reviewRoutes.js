@@ -13,6 +13,7 @@ router
     .post(
         authController.restrictTo('user'),
         reviewController.setTourUserIds,
+        reviewController.checkBookedTours,
         reviewController.createReview
     );
 

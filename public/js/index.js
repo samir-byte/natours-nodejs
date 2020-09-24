@@ -5,6 +5,12 @@ import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
 import { showAlert } from './alerts';
 import { signup } from './signup';
+import {
+    getReviewRating,
+    addReview,
+    editReview,
+    deleteReview
+} from './reviews';
 
 // DOM Elements
 const mapBox = document.getElementById('map');
@@ -13,6 +19,13 @@ const loginForm = document.querySelector('.form--login');
 const logoutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
+const newTourReview = document.querySelector('.reviews__rating--new-tour');
+const reviewForm = document.querySelector('.form--review');
+const reviewsStar = document.querySelectorAll('.reviews__star');
+const editReviewForm = document.querySelectorAll('.form--edit-review');
+const editReviewClose = document.querySelectorAll('.review__close');
+const editReviewBtn = document.querySelectorAll('.btn--edit-review');
+const deleteReviewBtn = document.querySelectorAll('.btn--delete-review');
 const bookBtn = document.getElementById('book-tour');
 
 // Delegation
@@ -78,6 +91,108 @@ if (userPasswordForm) {
         document.getElementById('password-current').value = '';
         document.getElementById('password').value = '';
         document.getElementById('password-confirm').value = '';
+    });
+}
+
+if (reviewForm) {
+    reviewForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const tour = reviewForm.dataset.tourId;
+        const ratingElement = document.getElementsByName('rating');
+        const rating = getReviewRating(ratingElement);
+        const review = document.getElementById('review').value;
+        addReview(tour, rating, review);
+    });
+}
+
+// Fills the svg star icons depending on the rating selected by the user
+if (reviewsStar) {
+    reviewsStar.forEach((star) => {
+        star.addEventListener('click', (e) => {
+            const ratingId = star.dataset.ratingId;
+
+            const stars = newTourReview
+                ? document.getElementsByName('rating')
+                : document.getElementsByName(ratingId);
+
+            const starSvgs = [];
+            for (let i = 0; i < stars.length; i++) {
+                const svg =
+                    stars[i].nextElementSibling.firstElementChild
+                        .firstElementChild;
+                starSvgs.push(svg);
+            }
+
+            const clickedStarValue = e.target.closest('label')
+                .previousElementSibling.value;
+
+            starSvgs.forEach((svg) => {
+                const starValue = svg.closest('label').previousElementSibling
+                    .value;
+
+                if (clickedStarValue >= starValue) {
+                    svg.classList.remove('reviews__star--active');
+                    svg.classList.remove('reviews__star--inactive');
+                    svg.classList.add('reviews__star--active');
+                } else {
+                    svg.classList.remove('reviews__star--active');
+                    svg.classList.remove('reviews__star--inactive');
+                    svg.classList.add('reviews__star--inactive');
+                }
+            });
+        });
+    });
+}
+
+if (editReviewBtn) {
+    editReviewBtn.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            e.target
+                .closest('.card__details')
+                .classList.toggle('review__edit--hide');
+            e.target.parentElement.nextElementSibling.classList.toggle(
+                'review__write--hide'
+            );
+        });
+    });
+}
+
+if (editReviewClose) {
+    editReviewClose.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            e.target.parentElement.previousElementSibling.classList.toggle(
+                'review__edit--hide'
+            );
+            e.target
+                .closest('.review__write')
+                .classList.toggle('review__write--hide');
+        });
+    });
+}
+
+if (editReviewForm) {
+    editReviewForm.forEach((form) => {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const reviewId = e.target.closest('form').dataset.reviewId;
+            const ratingElement = document.getElementsByName(
+                `rating-${reviewId}`
+            );
+            const rating = getReviewRating(ratingElement);
+            const review = document.getElementById(`review-ta-${reviewId}`)
+                .value;
+            editReview(reviewId, rating, review);
+        });
+    });
+}
+
+if (deleteReviewBtn) {
+    deleteReviewBtn.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const reviewId = btn.id.split('-')[1];
+            const confirmDelete = confirm("Are you sure you want to delete this review?");
+            if (confirmDelete) deleteReview(reviewId); 
+        });
     });
 }
 

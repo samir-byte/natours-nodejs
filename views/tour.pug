@@ -68,6 +68,20 @@ block content
 
     section.section-reviews
         .reviews
+            .review__write
+                form.reviews__card.form.form--review(data-tour-id=`${tour.id}`)
+                    h2.heading-secondary.ma-bt-md Add a review
+                    .reviews__rating.reviews__rating--new.reviews__rating--new-tour
+                        +reviewRatingTour('rating-one', 1)
+                        +reviewRatingTour('rating-two', 2)
+                        +reviewRatingTour('rating-three', 3)
+                        +reviewRatingTour('rating-four', 4)
+                        +reviewRatingTour('rating-five', 5)
+                    .form__group.form__group--review
+                        label.form__label(for='review')
+                        textarea#review.form__input(type='text', resize='none' placeholder='Tell us about your experience...', required)
+                    .form__group.form__group--review
+                        button.btn.btn--green.btn--review Submit review
             each review in tour.reviews
                 +reviewCard(review)
             
