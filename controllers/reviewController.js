@@ -12,7 +12,6 @@ exports.setTourUserIds = (req, res, next) => {
     next();
 };
 
-// UNFINISHED!!!
 exports.checkBookedTours = catchAsync(async (req, res, next) => {
     // 1) Find all bookings
     const bookings = await Booking.find({ user: req.user.id });

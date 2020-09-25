@@ -46,6 +46,9 @@ exports.getTour = catchAsync(async (req, res, next) => {
         fields: 'review rating user'
     });
 
+    const booking = await Booking.find({ tour: tour.id, user: res.locals.user });
+    const hasBooked = booking.length > 0 ? true : false
+
     if (!tour) {
         return next(new AppError('There is no tour with that name.', 404));
     }
@@ -62,7 +65,8 @@ exports.getTour = catchAsync(async (req, res, next) => {
         )
         .render('tour', {
             title: `${tour.name} tour`,
-            tour
+            tour,
+            hasBooked
         });
 });
 

@@ -759,6 +759,10 @@ body {
     background-color: #f7f7f7;
 }
 
+.section-hide {
+    display: none;
+}
+
 .cta {
     position: relative;
     max-width: 105rem;
