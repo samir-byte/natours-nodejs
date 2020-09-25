@@ -1312,7 +1312,8 @@ body {
     margin: 0 auto;
 }
 
-.login-form {
+.login-form,
+.forgot-password-form {
     margin: 0 auto;
     max-width: 55rem;
     background-color: #fff;
@@ -1466,4 +1467,18 @@ input[type="radio"]:checked + .form__label--rating > span svg {
     width: 2em;
     height: 2em;
     /*fill: #55c57a;*/
+}
+
+.forgot-password {
+    font-size: 1.2rem;
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.forgot-password > a,
+.forgot-password > a:link,
+.forgot-password > a:visited {
+    color: #55c57a;
+    cursor: pointer;
+    text-decoration: none;
 }

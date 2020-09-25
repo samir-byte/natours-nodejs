@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { login, logout } from './login';
+import { login, logout, forgotPassword, resetPassword } from './login';
 import { displayMap } from './mapbox';
 import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
@@ -16,6 +16,8 @@ import {
 const mapBox = document.getElementById('map');
 const signupForm = document.querySelector('.form--signup');
 const loginForm = document.querySelector('.form--login');
+const fogotPasswordForm = document.querySelector('.form--forgot-password');
+const resetPasswordForm = document.querySelector('.form-user-password-reset');
 const logoutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
@@ -52,6 +54,35 @@ if (loginForm) {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         login(email, password);
+    });
+}
+
+if (fogotPasswordForm) {
+    fogotPasswordForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        forgotPassword(email);
+    });
+}
+
+if (resetPasswordForm) {
+    resetPasswordForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        document.querySelector('.btn--save-password').textContent =
+            'Updating...';
+
+        const url = window.location.href;
+        const token = url.split('/')[4];
+        const password = document.getElementById('password').value;
+        const passwordConfirm = document.getElementById('password-confirm')
+            .value;
+
+        await resetPassword({ token, password, passwordConfirm });
+        
+        document.querySelector('.btn--save-password').textContent =
+            'Save password';
+        document.getElementById('password').value = '';
+        document.getElementById('password-confirm').value = '';
     });
 }
 
@@ -190,8 +221,10 @@ if (deleteReviewBtn) {
     deleteReviewBtn.forEach((btn) => {
         btn.addEventListener('click', () => {
             const reviewId = btn.id.split('-')[1];
-            const confirmDelete = confirm("Are you sure you want to delete this review?");
-            if (confirmDelete) deleteReview(reviewId); 
+            const confirmDelete = confirm(
+                'Are you sure you want to delete this review?'
+            );
+            if (confirmDelete) deleteReview(reviewId);
         });
     });
 }

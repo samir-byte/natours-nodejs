@@ -25,6 +25,21 @@ exports.getLoginForm = (req, res, next) => {
     });
 };
 
+exports.getForgotPasswordForm = (req, res, next) => {
+    res.status(200).render('forgotPassword', {
+        title: 'Forgot Password'
+    });
+}
+
+exports.getResetPasswordForm = (req, res, next) => {
+    const token = req.params.token;
+
+    res.status(200).render('resetPassword', {
+        title: 'Password Reset',
+        token
+    });
+}
+
 exports.getOverview = catchAsync(async (req, res, next) => {
     // 1) Get tour data from collection
     const tours = await Tour.find();
