@@ -4,8 +4,8 @@
   "description": "Learning node express and mongoDB",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon server.js",
-    "prod": "NODE_ENV=production node server.js",
+    "dev": "NODE_ENV=development nodemon server.js",
+    "prod": "NODE_ENV=production nodemon server.js",
     "debug": "ndb server.js"
   },
   "repository": {
