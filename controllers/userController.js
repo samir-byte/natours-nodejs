@@ -1,6 +1,9 @@
 
 exports.getAllUsers = (req, res) => {
-
+    res.status(200).json({
+        status: 'success',
+        data: "route not defined yet"
+    });
 }
 
 exports.getUser = (req, res) => {
