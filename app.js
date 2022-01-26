@@ -4,6 +4,7 @@ const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean')
+const hpp = require('hpp')
 
 const AppError = require('./utils/appError')
 const globalErrorHandler = require('./controllers/errorController')
@@ -36,6 +37,11 @@ app.use('/api',limiter);
 
 //body-parser middleware for req.body
 app.use(express.json({limit: '10kb'}));
+
+//prevents parameter pollution
+app.use(hpp({
+    whitelist: ['duration', 'ratingsQuantity', 'ratingsAverage', 'maxGroupSize', 'difficulty', 'price']
+}));
 
 //data sanitization middleware noSQL injection
 app.use(mongoSanitize());
