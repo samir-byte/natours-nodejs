@@ -4,6 +4,7 @@ const AppError = require('./../utils/appError');
 var jwt = require('jsonwebtoken');
 const jwtSecret = process.env.JWT_SECRET;
 var bcrypt = require('bcryptjs');
+// const changedPasswordAfter = require('./../models/userModel')
 
 const signToken = id => {
     return jwt.sign({id : id}, jwtSecret, {
@@ -26,7 +27,6 @@ exports.signup = catchAsync(async(req, res, next) => {
             user: newUser
         }
     })
-
 })
 
 exports.login = catchAsync(async(req, res, next) => {
@@ -59,5 +59,28 @@ exports.login = catchAsync(async(req, res, next) => {
             return next(new AppError('Password is incorrect', 401));
         }
     }
+})
 
+exports.protect = catchAsync(async(req, res, next) => {
+    // 1) Getting token and check of it's there
+    const token = req.headers.authorization;
+    if(!token){
+        return next(new AppError('You are not logged in', 401));
+    }
+    // 2) Verification token
+    const decoded = await jwt.verify(token, jwtSecret);
+    console.log(decoded);
+    // 3) Check if user still exists
+    const user = await User.findById(decoded.id);
+    if(!user){
+        return next(new AppError('User does not exist', 401));
+    }
+    // 4) Check if user changed password after the token was issued
+
+    if(user.changedPasswordAfter(decoded.iat)){
+        return next(new AppError('User recently changed password! Please log in again', 401));
+    }
+    // GRANT ACCESS TO PROTECTED ROUTE
+    req.user = user;
+    next();
 })

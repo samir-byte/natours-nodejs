@@ -40,7 +40,8 @@ const userSchema = new Schema({
             },
             message: 'Passwords are not the same'
         }
-    }
+    },
+    passwordChangedAt: Date
 })
 
 userSchema.pre('save', async function(next){
@@ -48,21 +49,20 @@ userSchema.pre('save', async function(next){
     if(!this.isModified('password')) return next();
 
     //hash password
-    // bcrypt.hash(this.password, 12, (err, hash) => {
-    //     // Now we can store the password hash in db.
-    //     console.log(hash);
-    //     this.password = hash;
-    //     console.log(this.password);
-    //     next();
-    //   });
     this.password = await bcrypt.hash(this.password, 12);
 
     //delete passwordConfirm
     this.passwordConfirm = undefined;
     next();
-
-
 })
+
+userSchema.methods.changedPasswordAfter = function(JWTTimestamp){
+    if(this.passwordChangedAt){
+        const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+        return JWTTimestamp < changedTimestamp;
+    }
+    return false;
+}
 
 const User = mongoose.model('User', userSchema);
 
