@@ -65,6 +65,15 @@ userSchema.pre('save', async function(next){
     next();
 })
 
+//pre middleware to set passwordChangedAt to current timestamp
+userSchema.pre('save', function(next){
+    //checking is password is modified or document is new
+    if(!this.isModified('password') || this.isNew) return next();
+
+    this.passwordChangedAt = Date.now() - 1000; //subtract 1 second because jwt can slower sometimes
+    next();
+});
+
 //instance methods to check if password was changed after token is issued
 userSchema.methods.changedPasswordAfter = function(JWTTimestamp){
     if(this.passwordChangedAt){

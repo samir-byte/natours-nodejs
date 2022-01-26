@@ -5,6 +5,7 @@ var jwt = require('jsonwebtoken');
 const jwtSecret = process.env.JWT_SECRET;
 var bcrypt = require('bcryptjs');
 const sendEmail = require('./../utils/email');
+const crypto = require('crypto');
 
 
 //function generating jwt token
@@ -149,5 +150,30 @@ exports.forgotPassword = catchAsync(async(req, res, next) => {
 
 //reset password controller
 exports.resetPassword = catchAsync(async(req, res, next) => {
-    
+    /* 
+    1. Get user based on the token
+    2. Get user based on the posted password
+    3. Update the password
+    4. Save the user
+    */
+   //check for encrypted token which is saved in user model
+    const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+    const user = await User.findOne({
+        passwordResetToken: hashedToken,
+        passwordResetExpires: {$gt: Date.now()}
+    });
+    if(!user){
+        return next(new AppError('Token is invalid or Expired', 400));
+    }
+    user.password = req.body.password;
+    user.passwordConfirm = req.body.passwordConfirm;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+
+    const token = signToken(user._id)
+    res.status(200).json({
+        status: 'success',
+        token
+    }) 
 })
