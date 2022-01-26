@@ -106,3 +106,27 @@ exports.restrictTo = (...roles) => {
         next();
     }
 }
+
+//forgot password controller
+exports.forgotPassword = catchAsync(async(req, res, next) => {
+    /* 
+    1. Get user based on posted email
+    2. Generate the random reset token
+    3. Set the reset token expiration
+    4. Save the reset token to user
+    5. Send the email to user's email with the reset token
+    */
+   const user = await User.findOne({email: req.body.email});
+   if(!user){
+       return next(new AppError('There is no user with this email address', 404));
+   }
+    //generate the token
+    const resetToken = user.createPasswordResetToken();
+    await user.save({validateBeforeSave: false});/*validateBeforeSave: false 
+    is used to save the token without validation.. this will deactivate all required field in user model*/
+})
+
+//reset password controller
+exports.resetPassword = catchAsync(async(req, res, next) => {
+    
+})

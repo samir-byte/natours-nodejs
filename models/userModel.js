@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const mongoose = require('mongoose')
 var bcrypt = require('bcryptjs');
 const validator = require('validator')
@@ -46,9 +47,12 @@ const userSchema = new Schema({
             message: 'Passwords are not the same'
         }
     },
-    passwordChangedAt: Date
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date
 })
 
+//pre middleware to hash password before saving
 userSchema.pre('save', async function(next){
     //only run this function if password was actually modified
     if(!this.isModified('password')) return next();
@@ -61,12 +65,26 @@ userSchema.pre('save', async function(next){
     next();
 })
 
+//instance methods to check if password was changed after token is issued
 userSchema.methods.changedPasswordAfter = function(JWTTimestamp){
     if(this.passwordChangedAt){
         const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
         return JWTTimestamp < changedTimestamp;
     }
     return false;
+}
+
+//instance method to create password reset token
+userSchema.methods.createPasswordResetToken = function(){
+    const resetToken = crypto.randomBytes(32).toString('hex');
+
+    //encrypting token before saving to db
+    this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+    console.log({resetToken}, this.passwordResetToken);
+
+    //while returnig no need to return encrypted token to client
+    return resetToken;
 }
 
 const User = mongoose.model('User', userSchema);
