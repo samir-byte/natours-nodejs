@@ -15,6 +15,28 @@ const signToken = id => {
     });
 }
 
+const createSendToken = (user, statusCode, res) => {
+    const token = signToken(user._id)
+    const cookieOptions = {
+        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+        httpOnly: true
+    };
+    //if production then only set secure true
+    if(process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+
+    //doesnt send password with response
+    user.password = undefined;
+
+    res.cookie('jwt', token, cookieOptions);
+    res.status(statusCode).json({
+        status: 'success',
+        token,
+        data: {
+            user: user
+        }
+    })
+}
+
 //signup middleware using jwt
 exports.signup = catchAsync(async(req, res, next) => {
     const newUser = await User.create({
@@ -23,14 +45,7 @@ exports.signup = catchAsync(async(req, res, next) => {
         password: req.body.password,
         passwordConfirm: req.body.passwordConfirm
     });
-    const token = signToken(newUser._id)
-    res.status(201).json({
-        status: 'success',
-        token,
-        data: {
-            user: newUser
-        }
-    })
+    createSendToken(newUser, 200, res);
 })
 
 //login middleware using jwt
@@ -54,11 +69,12 @@ exports.login = catchAsync(async(req, res, next) => {
         // console.log(hashedPassword);
         // console.log(user.password);
         if(isMatched){
-            const token = signToken(user._id)
-            res.status(200).json({
-                status: 'success',
-                token
-            })
+            createSendToken(user, 200, res);
+            // const token = signToken(user._id)
+            // res.status(200).json({
+            //     status: 'success',
+            //     token
+            // })
         }
         else{
             return next(new AppError('Password is incorrect', 401));
@@ -171,11 +187,12 @@ exports.resetPassword = catchAsync(async(req, res, next) => {
     user.passwordResetExpires = undefined;
     await user.save();
 
-    const token = signToken(user._id)
-    res.status(200).json({
-        status: 'success',
-        token
-    }) 
+    createSendToken(user, 200, res);
+    // const token = signToken(user._id)
+    // res.status(200).json({
+    //     status: 'success',
+    //     token
+    // }) 
 })
 
 //updating password functionality for logged in user
@@ -200,10 +217,11 @@ exports.updatePassword = catchAsync(async(req, res, next) => {
     // user.passwordChangedAt = Date.now() - 1000;
     await user.save();
   
-    const token = signToken(user._id)
-    res.status(200).json({
-        status: 'success',
-        message: 'Password updated successfully',
-        token
-    })
+    createSendToken(newUser, 200, res);
+    // const token = signToken(user._id)
+    // res.status(200).json({
+    //     status: 'success',
+    //     message: 'Password updated successfully',
+    //     token
+    // })
 })
