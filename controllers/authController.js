@@ -177,3 +177,33 @@ exports.resetPassword = catchAsync(async(req, res, next) => {
         token
     }) 
 })
+
+//updating password functionality for logged in user
+exports.updatePassword = catchAsync(async(req, res, next) => {
+    /*
+    1. Get user from collection
+    2. Check if posted password is correct
+    3. Update password
+    4. Save the user
+    */
+    const user = await User.findById(req.user.id).select('+password');
+    const isMatched = await bcrypt.compare(req.body.oldPassword, user.password);
+    if(!isMatched){
+        return next(new AppError('Incorrect password', 400));
+    }
+    
+    if(user.password === req.body.newPassword){
+        return next(new AppError('New password should be different from old password', 400));
+    }
+    user.password = req.body.newPassword;
+    user.passwordConfirm = req.body.newPasswordConfirm;
+    // user.passwordChangedAt = Date.now() - 1000;
+    await user.save();
+  
+    const token = signToken(user._id)
+    res.status(200).json({
+        status: 'success',
+        message: 'Password updated successfully',
+        token
+    })
+})

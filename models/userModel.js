@@ -49,7 +49,12 @@ const userSchema = new Schema({
     },
     passwordChangedAt: Date,
     passwordResetToken: String,
-    passwordResetExpires: Date
+    passwordResetExpires: Date,
+    active: {
+        type: Boolean,
+        default: true,
+        select: false
+    }
 })
 
 //pre middleware to hash password before saving
@@ -73,6 +78,11 @@ userSchema.pre('save', function(next){
     this.passwordChangedAt = Date.now() - 1000; //subtract 1 second because jwt can slower sometimes
     next();
 });
+
+userSchema.pre(/^find/, function(next){
+    this.find({active: true});
+    next();
+})
 
 //instance methods to check if password was changed after token is issued
 userSchema.methods.changedPasswordAfter = function(JWTTimestamp){
