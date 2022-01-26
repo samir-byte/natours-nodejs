@@ -4,14 +4,16 @@ const AppError = require('./../utils/appError');
 var jwt = require('jsonwebtoken');
 const jwtSecret = process.env.JWT_SECRET;
 var bcrypt = require('bcryptjs');
-// const changedPasswordAfter = require('./../models/userModel')
 
+
+//function generating jwt token
 const signToken = id => {
     return jwt.sign({id : id}, jwtSecret, {
         expiresIn: '1h'
     });
 }
 
+//signup middleware using jwt
 exports.signup = catchAsync(async(req, res, next) => {
     const newUser = await User.create({
         name: req.body.name,
@@ -29,6 +31,7 @@ exports.signup = catchAsync(async(req, res, next) => {
     })
 })
 
+//login middleware using jwt
 exports.login = catchAsync(async(req, res, next) => {
     // const email = req.body.email;
     // const password = req.body.password;
@@ -61,9 +64,14 @@ exports.login = catchAsync(async(req, res, next) => {
     }
 })
 
+//middleware to check if user is logged in 
 exports.protect = catchAsync(async(req, res, next) => {
     // 1) Getting token and check of it's there
-    const token = req.headers.authorization;
+    let token;
+    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+        token = req.headers.authorization.split(' ')[1];
+    }
+    
     if(!token){
         return next(new AppError('You are not logged in', 401));
     }
@@ -84,3 +92,17 @@ exports.protect = catchAsync(async(req, res, next) => {
     req.user = user;
     next();
 })
+
+//restrictions middleware only for mentioned roles
+exports.restrictTo = (...roles) => {
+    /*returining the middleware function bcoz middleware doesnot work on arguments
+    roles contain array new es6 feature
+    getting role value from req.user previous middleware which runs before this middleware
+    */
+    return (req, res, next) => {
+        if(!roles.includes(req.user.role)){
+            return next(new AppError('You do not have permission to perform this action', 403));
+        }
+        next();
+    }
+}
