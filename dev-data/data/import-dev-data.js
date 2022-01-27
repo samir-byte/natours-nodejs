@@ -5,9 +5,10 @@ const Tour = require('../../models/tourModel');
 // const User = require('../../models/userModel');
 // const Review = require('../../models/reviewModel');
 
-dotenv.config({ path: './../config.env' });
+dotenv.config({ path: './config.env' });
 
 // Access the MongoDB database path and replace the password variable in the string
+console.log(process.env.DATABASE)
 const DB = process.env.DATABASE.replace(
     '<PASSWORD>',
     process.env.DATABASE_PASSWORD
