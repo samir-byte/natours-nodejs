@@ -108,13 +108,20 @@ const tourSchema = new Schema({
             ref: 'User'
         }
         
-    ]
+    ],
   }, {
     toJSON: { virtuals: true },
   });
 
 tourSchema.virtual('durationWeeks').get(function(){
     return this.duration / 7
+})
+
+//virtual populate
+tourSchema.virtual('reviews', {
+    ref: 'Review',
+    foreignField: 'tour',
+    localField: '_id'
 })
 
 //Document middleware - runs before .save() and .create() not in .insertMany()
