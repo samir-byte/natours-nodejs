@@ -1,5 +1,7 @@
 const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
+const AppError = require('./../utils/appError');
+const factory = require('./handlerFactory');
 
 
 //function to filter out unwanted fields
@@ -62,10 +64,5 @@ exports.createUser = (req, res) => {
 
 }
 
-exports.updateUser = (req, res) => {
-
-}
-
-exports.deleteUser = (req, res) => {
-
-}
+exports.updateUser = factory.updateOne(User);
+exports.deleteUser = factory.deleteOne(User);

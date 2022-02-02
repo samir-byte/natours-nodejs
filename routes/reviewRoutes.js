@@ -10,4 +10,10 @@ router
           authController.restrictTo('user'),
           reviewController.createReview);
 
+router
+    .route('/:id')
+    .delete(authController.protect,
+        authController.restrictTo('user','admin'),
+        reviewController.deleteReview)
+    .patch(authController.protect,authController.restrictTo('user','admin'),reviewController.updateReview);
 module.exports = router;

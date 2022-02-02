@@ -170,31 +170,7 @@ exports.postTour = catchAsync(async (req, res, next) => {
     
 })
 
-exports.updateTour = catchAsync(async (req, res, next) => {
-
-    console.log(req.params);
-        const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true
-        })
-        res.status(200).json({
-            status: 'success',
-            data: {
-                tour
-            }
-        })
-    // try{
-        
-    // }
-    // catch(err){
-    //     res.status(404).json({
-    //         status: 'fail',
-    //         message: err
-    //     })
-    // }
-    
-})
-
+exports.updateTour = factory.updateOne(Tour)
 
 exports.deleteTour = factory.deleteOne(Tour)
 // exports.deleteTour = catchAsync(async (req, res, next) => {
