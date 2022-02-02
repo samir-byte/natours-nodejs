@@ -113,6 +113,11 @@ const tourSchema = new Schema({
     toJSON: { virtuals: true },
   });
 
+  //creating index for price and ratingsAverage to enhance read performance for price queries
+  //index shld be done for most queries searched because it comes with some overhead
+tourSchema.index({price: 1, ratingsAverage: -1});
+tourSchema.index({slug: 1});
+
 tourSchema.virtual('durationWeeks').get(function(){
     return this.duration / 7
 })

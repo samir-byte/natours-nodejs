@@ -64,7 +64,7 @@ exports.getAll = (Model) => catchAsync(async (req, res, next) => {
         console.log(features);
         console.log("this is executed after features")
         console.log(`this is executed after features ${features.query}`);
-        const docs = await features.query;
+        const docs = await features.query.explain();
         // console.log(tours);
         res.status(200).json({
         status: 'success',
