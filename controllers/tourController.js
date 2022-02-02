@@ -1,7 +1,6 @@
 const fs = require('fs')
 // const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)) 
 const Tour = require('./../models/tourModel')
-const APIFeatures = require('../utils/apiFeatures')
 const catchAsync = require('../utils/catchAsync')
 const AppError = require('../utils/appError')
 const factory = require('./handlerFactory')
@@ -37,22 +36,24 @@ exports.aliasTopTours = (req, res, next) => {
     next();
 }
 
-exports.getAllTours = catchAsync (async (req, res, next) => {
 
-    const features = new APIFeatures(Tour.find(), req.query)
-                        .filter()
-                        .sort()
-                        .limitFields()
-                        .paginate();
-        console.log(features);
-        console.log("this is executed after features")
-        console.log(`this is executed after features ${features.query}`);
-        const tours = await features.query;
-        // console.log(tours);
-        res.status(200).json({
-        status: 'success',
-        data: tours,
-        requestTime: req.requestTime
+exports.getAllTours = factory.getAll(Tour)
+// exports.getAllTours = catchAsync (async (req, res, next) => {
+
+//     const features = new APIFeatures(Tour.find(), req.query)
+//                         .filter()
+//                         .sort()
+//                         .limitFields()
+//                         .paginate();
+//         console.log(features);
+//         console.log("this is executed after features")
+//         console.log(`this is executed after features ${features.query}`);
+//         const tours = await features.query;
+//         // console.log(tours);
+//         res.status(200).json({
+//         status: 'success',
+//         data: tours,
+//         requestTime: req.requestTime
     // try{
     //     console.log("this is executed");
     //     //1. FILTERING
@@ -106,22 +107,24 @@ exports.getAllTours = catchAsync (async (req, res, next) => {
     //         status: 'fail',
     //         message: err
     //     })
-    })
+//     })
     
-})
+// })
 
-exports.getTour = catchAsync(async (req, res, next) => {
-    const tour = await Tour.findById(req.params.id).populate('reviews')
-    if(!tour){
-       return next(new AppError('No tour found with that ID', 404))
-    }
-        console.log(req.params);
-        res.status(200).json({
-        status: 'success',
-        data: {
-            tour
-        }
-    })
+
+exports.getTour = factory.getOne(Tour, {path: 'reviews'})
+// exports.getTour = catchAsync(async (req, res, next) => {
+//     const tour = await Tour.findById(req.params.id).populate('reviews')
+//     if(!tour){
+//        return next(new AppError('No tour found with that ID', 404))
+//     }
+//         console.log(req.params);
+//         res.status(200).json({
+//         status: 'success',
+//         data: {
+//             tour
+//         }
+//     })
     // try{
         
     // })
@@ -133,7 +136,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
     //     })
     // }
     
-})
+// })
 
 
 exports.postTour = factory.createOne(Tour);

@@ -1,5 +1,7 @@
 const catchAsync = require('../utils/catchAsync')
 const AppError = require('../utils/appError')
+const APIFeatures = require('../utils/apiFeatures')
+
 
 exports.deleteOne = (Model) => catchAsync(async (req, res, next) => {
     console.log(req.params);
@@ -34,5 +36,39 @@ exports.createOne = (Model) => catchAsync(async (req, res, next) => {
             data: {
                 doc
             }
+        })
+})
+
+exports.getOne = (Model, popOptions) => catchAsync(async (req, res, next) => {
+    let query = Model.findById(req.params.id)
+    if(popOptions) query = query.populate(popOptions)
+    const doc = await query;
+    if(!doc){
+       return next(new AppError('No tour found with that ID', 404))
+    }
+        console.log(req.params);
+        res.status(200).json({
+        status: 'success',
+        data: {
+            doc
+        }
+    })
+})
+
+exports.getAll = (Model) => catchAsync(async (req, res, next) => {
+    const features = new APIFeatures(Model.find(), req.query)
+                        .filter()
+                        .sort()
+                        .limitFields()
+                        .paginate();
+        console.log(features);
+        console.log("this is executed after features")
+        console.log(`this is executed after features ${features.query}`);
+        const docs = await features.query;
+        // console.log(tours);
+        res.status(200).json({
+        status: 'success',
+        data: docs,
+        requestTime: req.requestTime
         })
 })

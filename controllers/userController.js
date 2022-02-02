@@ -11,13 +11,15 @@ const filterObj = (obj, ...allowedFields) => {
     })
 }
 
-exports.getAllUsers = catchAsync(async(req, res) => {
-    const users = await User.find();
-    res.status(200).json({
-        status: 'success',
-        users
-    });
-});
+
+exports.getAllUsers = factory.getAll(User);
+// exports.getAllUsers = catchAsync(async(req, res) => {
+//     const users = await User.find();
+//     res.status(200).json({
+//         status: 'success',
+//         users
+//     });
+// });
 
 exports.updateMe = catchAsync(async(req, res, next) => {
     /*
@@ -56,9 +58,7 @@ exports.deleteMe = catchAsync(async(req, res, next) => {
 });
    
 
-exports.getUser = (req, res) => {
-
-}
+exports.getUser = factory.getOne(User);
 
 exports.createUser = (req, res) => {
 
