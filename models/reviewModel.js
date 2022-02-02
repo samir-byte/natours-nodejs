@@ -37,6 +37,10 @@ const reviewSchema = new Schema({
     toObject: { virtuals: true}
   });
 
+  //preventing duplicate tour reviews setting index and unique to true
+reviewSchema.index({ tour: 1, user: 1}, {unique: true})
+
+
 //query middleware
 reviewSchema.pre(/^find/, function(next){
     let populateQuery = [{path:'user', select:'-__v'}];
@@ -46,6 +50,7 @@ reviewSchema.pre(/^find/, function(next){
     next();
 });
 
+//static middleware to calc average rating and number of reviews
 reviewSchema.statics.calcAverageRatings = async function(tourId){
     const stats = await this.aggregate([
         {
@@ -72,11 +77,13 @@ reviewSchema.statics.calcAverageRatings = async function(tourId){
     }
 }
 
+//post middleware when review is saved
 reviewSchema.post('save', function(){
     this.constructor.calcAverageRatings(this.tour);
    
 })
 
+//pre middleware when review is removed or updated
 reviewSchema.pre(/^findOneAnd/, async function(next){
     this.r = await this.findOne();
     // console.log(r)
