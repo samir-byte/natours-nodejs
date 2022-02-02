@@ -136,43 +136,11 @@ exports.getTour = catchAsync(async (req, res, next) => {
 })
 
 
-exports.postTour = catchAsync(async (req, res, next) => {
-    // const newId = tours[tours.length - 1].id + 1
-    // const newTour = Object.assign({id: newId}, req.body)
-    // tours.push(newTour)
-    // fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`, JSON.stringify(tours), err => {
-    //     res.status(201).json({
-    //         status: 'success',
-    //         data: {
-    //             tour: newTour
-    //         }
-    //     })
-    // })
+exports.postTour = factory.createOne(Tour);
 
-    //fn function in catchAsync is this function
-    const newTour = await Tour.create(req.body);
-        res.status(201).json({
-            status: 'success',
-            data: {
-                tour: newTour
-            }
-        })
+exports.updateTour = factory.updateOne(Tour);
 
-    // try{
-        
-    // }
-    // catch(err){
-    //     res.status(400).json({
-    //         status: 'fail',
-    //         message: err
-    //     })
-    // }
-    
-})
-
-exports.updateTour = factory.updateOne(Tour)
-
-exports.deleteTour = factory.deleteOne(Tour)
+exports.deleteTour = factory.deleteOne(Tour);
 // exports.deleteTour = catchAsync(async (req, res, next) => {
     
 //     console.log(req.params);
