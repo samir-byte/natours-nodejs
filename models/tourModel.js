@@ -118,6 +118,7 @@ const tourSchema = new Schema({
   //index shld be done for most queries searched because it comes with some overhead
 tourSchema.index({price: 1, ratingsAverage: -1});
 tourSchema.index({slug: 1});
+tourSchema.index({startLocation: '2dsphere'});//need to index startLocation to use geospatial queries
 
 tourSchema.virtual('durationWeeks').get(function(){
     return this.duration / 7
