@@ -4,7 +4,7 @@ const AppError = require('./../utils/appError');
 var jwt = require('jsonwebtoken');
 const jwtSecret = process.env.JWT_SECRET;
 var bcrypt = require('bcryptjs');
-const sendEmail = require('./../utils/email');
+const Email = require('./../utils/email');
 const crypto = require('crypto');
 
 
@@ -45,7 +45,11 @@ exports.signup = catchAsync(async(req, res, next) => {
         password: req.body.password,
         passwordConfirm: req.body.passwordConfirm
     });
+    const url = `${req.protocol}://${req.get('host')}/me`
+    console.log(url)
+    await new Email(newUser,url).sendWelcome();
     createSendToken(newUser, 200, res);
+    
 })
 
 //login middleware using jwt
@@ -146,11 +150,11 @@ exports.forgotPassword = catchAsync(async(req, res, next) => {
     const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
     const message = `Forgot your password send patch request with password and conform password in ${resetURL}\n if this is not you ignore this email`;
     try{
-        await sendEmail({
-            email: user.email,
-            subject: 'Your password reset token (valid for 10 min)',
-            message
-        });
+        // await sendEmail({
+        //     email: user.email,
+        //     subject: 'Your password reset token (valid for 10 min)',
+        //     message
+        // });
         res.status(200).json({
             status: 'success',
             message: `Token sent to ${user.email}`
