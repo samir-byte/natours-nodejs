@@ -1,4 +1,6 @@
 const fs = require('fs')
+const multer = require('multer')
+const sharp = require('sharp')
 // const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)) 
 const Tour = require('./../models/tourModel')
 const catchAsync = require('../utils/catchAsync')
@@ -28,6 +30,31 @@ const factory = require('./handlerFactory')
 //     })
 //     next();
 // }
+
+const multerStorage = multer.memoryStorage(); //saving image as buffer not in any local storage
+
+const multerFilter = (req, file, cb) => {
+    if(file.mimetype.startsWith('image')){
+        cb(null, true)
+    }
+    else{
+        cb(new AppError('Not an image! Please upload only images', 400), false)
+    }
+}
+const upload = multer({ 
+    storage: multerStorage,
+    fileFilter: multerFilter 
+})
+
+exports.updateTourImages = upload.fields([
+    { name: 'imageCover', maxCount: 1 },
+    { name: 'images', maxCount: 3 }
+])
+
+exports.resizeTourImages = (req, res, next) => {
+    console.log(req.files)
+    next();
+}
 
 exports.aliasTopTours = (req, res, next) => {
     req.query.limit = '5';
