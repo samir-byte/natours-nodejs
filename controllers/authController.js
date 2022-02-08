@@ -148,13 +148,14 @@ exports.forgotPassword = catchAsync(async(req, res, next) => {
     is used to save the token without validation.. this will deactivate all required field in user model*/
 
     const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
-    const message = `Forgot your password send patch request with password and conform password in ${resetURL}\n if this is not you ignore this email`;
+    // const message = `Forgot your password send patch request with password and conform password in ${resetURL}\n if this is not you ignore this email`;
     try{
         // await sendEmail({
         //     email: user.email,
         //     subject: 'Your password reset token (valid for 10 min)',
         //     message
         // });
+        await new Email(user, resetURL).sendPasswordReset();
         res.status(200).json({
             status: 'success',
             message: `Token sent to ${user.email}`
