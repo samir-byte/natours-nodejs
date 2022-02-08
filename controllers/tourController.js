@@ -51,8 +51,35 @@ exports.updateTourImages = upload.fields([
     { name: 'images', maxCount: 3 }
 ])
 
-exports.resizeTourImages = (req, res, next) => {
+exports.resizeTourImages = async (req, res, next) => {
     console.log(req.files)
+    if(!req.files.imageCover || !req.files.images) return next();
+
+    const imageCoverFilename = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+    
+    // 1, processing cover image
+
+    await sharp(req.files.imageCover[0].buffer)
+        .resize(2000, 1333)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`uploads/tours/${imageCoverFilename}`)
+
+    //setting imageCover field in req.body
+    req.body.imageCover = imageCoverFilename;
+
+    // 2, processing images
+    req.body.images = [];
+    await Promise.all(req.files.images.map(async (file, i) => {
+        const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
+        await sharp(req.file.buffer)
+        .resize(2000, 1333)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`uploads/tours/${filename}`)
+        req.body.images.push(filename);
+    }))
+    
     next();
 }
 
