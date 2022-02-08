@@ -1,19 +1,22 @@
 const multer  = require('multer')
+const sharp = require('sharp');
 
 const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const factory = require('./handlerFactory');
 
-const multerStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/')
-    },
-    filename: function (req, file, cb) {
-        const ext = file.mimetype.split('/')[1];
-        cb(null, `user-${req.user.id}-${Date.now()}.${ext}`)
-      }
-})
+//don't save to disk original file save after resizing
+// const multerStorage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, 'uploads/')
+//     },
+//     filename: function (req, file, cb) {
+//         const ext = file.mimetype.split('/')[1];
+//         cb(null, `user-${req.user.id}-${Date.now()}.${ext}`)
+//       }
+// })
+const multerStorage = multer.memoryStorage(); //saving image as buffer not in any local storage
 
 const multerFilter = (req, file, cb) => {
     if(file.mimetype.startsWith('image')){
@@ -29,6 +32,21 @@ const upload = multer({
 })
 
 exports.uploadUserPhoto = upload.single('photo');
+
+//resizing user photo middleware
+exports.resizeUserPhoto = (req, res, next) => {
+    if(!req.file) return next();
+
+    //giving file name which is used in our next handler function
+    req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+
+    sharp(req.file.buffer)
+        .resize(500, 500)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`uploads/${req.file.filename}`)
+    next();
+}
 
 //function to filter out unwanted fields
 const filterObj = (obj, ...allowedFields) => {
