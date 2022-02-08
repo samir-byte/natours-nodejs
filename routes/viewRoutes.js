@@ -1,0 +1,20 @@
+const express = require('express');
+const viewsController = require('../controllers/viewsController');
+const authController = require('../controllers/authController');
+
+const router = express.Router();
+
+router.use(viewsController.alerts);
+
+router.get('/', viewsController.getOverview);
+
+router.get('/tour/:slug',viewsController.getTour);
+router.get('/signup', viewsController.getSingupForm);
+router.get('/login', viewsController.getLoginForm);
+router.get('/me', viewsController.getAccount);
+
+// router.get('/my-tours', viewsController.getMyTours);
+
+// router.post('/submit-user-data',  viewsController.updateUserData);
+
+module.exports = router;
