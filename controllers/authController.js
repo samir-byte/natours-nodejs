@@ -46,7 +46,7 @@ exports.signup = catchAsync(async(req, res, next) => {
         passwordConfirm: req.body.passwordConfirm
     });
     const url = `${req.protocol}://${req.get('host')}/me`
-    console.log(url)
+    // console.log(url)
     await new Email(newUser,url).sendWelcome();
     createSendToken(newUser, 200, res);
     
@@ -56,7 +56,7 @@ exports.signup = catchAsync(async(req, res, next) => {
 exports.login = catchAsync(async(req, res, next) => {
     // const email = req.body.email;
     // const password = req.body.password;
-    console.log("this is executing")
+    // console.log("this is executing")
     const {email, password} = req.body
     //check if email and password exist
 
@@ -99,7 +99,7 @@ exports.protect = catchAsync(async(req, res, next) => {
     }
     // 2) Verification token
     const decoded = await jwt.verify(token, jwtSecret);
-    console.log(decoded);
+    // console.log(decoded);
     // 3) Check if user still exists
     const user = await User.findById(decoded.id);
     if(!user){

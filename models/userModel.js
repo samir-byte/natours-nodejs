@@ -100,7 +100,7 @@ userSchema.methods.createPasswordResetToken = function(){
     //encrypting token before saving to db
     this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
     this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
-    console.log({resetToken}, this.passwordResetToken);
+    // console.log({resetToken}, this.passwordResetToken);
 
     //while returnig no need to return encrypted token to client
     return resetToken;

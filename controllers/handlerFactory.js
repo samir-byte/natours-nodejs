@@ -4,7 +4,7 @@ const APIFeatures = require('../utils/apiFeatures')
 
 
 exports.deleteOne = (Model) => catchAsync(async (req, res, next) => {
-    console.log(req.params);
+    // console.log(req.params);
 
     const doc =  await Model.findByIdAndDelete(req.params.id)
     if(!doc) return next(new AppError('No document found with that ID', 404))
@@ -15,7 +15,7 @@ exports.deleteOne = (Model) => catchAsync(async (req, res, next) => {
 })
 
 exports.updateOne = (Model) => catchAsync(async (req, res, next) => {
-    console.log(req.params);
+    // console.log(req.params);
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
         runValidators: true
@@ -46,7 +46,7 @@ exports.getOne = (Model, popOptions) => catchAsync(async (req, res, next) => {
     if(!doc){
        return next(new AppError('No tour found with that ID', 404))
     }
-        console.log(req.params);
+        // console.log(req.params);
         res.status(200).json({
         status: 'success',
         data: {
@@ -61,9 +61,9 @@ exports.getAll = (Model) => catchAsync(async (req, res, next) => {
                         .sort()
                         .limitFields()
                         .paginate();
-        console.log(features);
-        console.log("this is executed after features")
-        console.log(`this is executed after features ${features.query}`);
+        // console.log(features);
+        // console.log("this is executed after features")
+        // console.log(`this is executed after features ${features.query}`);
         const docs = await features.query.explain();
         // console.log(tours);
         res.status(200).json({

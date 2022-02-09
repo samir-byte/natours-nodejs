@@ -1,22 +1,22 @@
 const AppError = require('./../utils/appError')
 
 const handleValidationErrorDB = err => {
-    console.log(err.message)
+    // console.log(err.message)
     let message = Object.values(err.errors).map(val => val.message)
     message = message.join('. ')
     return new AppError(message, 400)
 }
 
 const handleCastErrorDB = err => {
-    console.log('this is executing')
+    // console.log('this is executing')
     const message = `Invalid ${err.path}: ${err.value}.`
-    console.log(message)
+    // console.log(message)
     return new AppError(message, 400)
 }
 
 const handleDuplicateFieldsDB = err => {
     const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
-    console.log(value)
+    // console.log(value)
     const message = `Duplicate field value: ${value}. Please use another value`
     return new AppError(message, 400)
 }

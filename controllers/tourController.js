@@ -242,7 +242,7 @@ exports.getTourStats = catchAsync(async (req, res, next) => {
         //     $match: { _id: { $ne: 'easy' } }
         // }
     ])
-    console.log(stats)
+    // console.log(stats)
     res.status(200).json({
         status: 'success',
         data: {
@@ -309,7 +309,7 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
     if(!lat || !lng){
         next(new AppError('Please provide latitude and longitude in the format lat,lng', 404))
     }
-    console.log(distance, lat, lng);
+    // console.log(distance, lat, lng);
 
     //if distance in mi distance/3963.2 if km distance/6378.1
     const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
@@ -329,7 +329,7 @@ exports.getToursWithin = catchAsync(async (req, res, next) => {
 })
 
 exports.getDistances = catchAsync(async (req, res, next) => {
-    console.log(req.params);
+    // console.log(req.params);
     const { latlng, unit} = req.params;
     const [lat,lng] = latlng.split(',');
  

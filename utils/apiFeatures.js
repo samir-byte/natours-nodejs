@@ -2,11 +2,11 @@ class APIFeatures {
     constructor(query, queryString) {
       this.query = query;
       this.queryString = queryString;
-      console.log("this constructor is called")
+      // console.log("this constructor is called")
     }
   
     filter() {
-        console.log("filter method is called ")
+        // console.log("filter method is called ")
       const queryObj = { ...this.queryString };
       const excludedFields = ['page', 'sort', 'limit', 'fields'];
       excludedFields.forEach(el => delete queryObj[el]);
@@ -21,7 +21,7 @@ class APIFeatures {
     }
   
     sort() {
-        console.log("sort method is called ")
+        // console.log("sort method is called ")
       if (this.queryString.sort) {
         const sortBy = this.queryString.sort.split(',').join(' ');
         this.query = this.query.sort(sortBy);
@@ -33,7 +33,7 @@ class APIFeatures {
     }
   
     limitFields() {
-        console.log("limitFields method is called ")
+        // console.log("limitFields method is called ")
       if (this.queryString.fields) {
         const fields = this.queryString.fields.split(',').join(' ');
         this.query = this.query.select(fields);
@@ -45,7 +45,7 @@ class APIFeatures {
     }
   
     paginate() {
-        console.log("paginate method is called ")
+        // console.log("paginate method is called ")
       const page = this.queryString.page * 1 || 1;
       const limit = this.queryString.limit * 1 || 100;
       const skip = (page - 1) * limit;

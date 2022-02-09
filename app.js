@@ -6,6 +6,7 @@ const helmet = require('helmet')
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean')
 const hpp = require('hpp')
+const compression = require('compression')
 
 const AppError = require('./utils/appError')
 const globalErrorHandler = require('./controllers/errorController')
@@ -47,6 +48,8 @@ app.use('/api',limiter);
 
 //body-parser middleware for req.body
 app.use(express.json({limit: '10kb'}));
+
+app.use(compression());
 
 //prevents parameter pollution
 app.use(hpp({

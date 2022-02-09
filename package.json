@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "NODE_ENV=development npx nodemon server.js",
     "prod": "NODE_ENV=production nodemon server.js",
-    "debug": "ndb server.js"
+    "debug": "ndb server.js",
+    "watch": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
+    "build": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +22,7 @@
   "homepage": "https://github.com/Olwah/natours-nodejs#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
     "dotenv": "^10.0.0",
     "express": "^4.17.2",
     "express-mongo-sanitize": "^2.2.0",

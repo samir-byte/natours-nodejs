@@ -59,7 +59,7 @@ export const deleteReview = async (id) => {
                 id
             }
         });
-        console.log(res.status);
+        // console.log(res.status);
         if (res.status === 204) {
             showAlert('success', 'Review deleted. The page will automatically reload in a few seconds.');
             window.setTimeout(() => {

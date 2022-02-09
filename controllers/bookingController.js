@@ -1,5 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-console.log(process.env.STRIPE_SECRET_KEY)
+// console.log(process.env.STRIPE_SECRET_KEY)
 const Tour = require('./../models/tourModel')
 const catchAsync = require('../utils/catchAsync')
 const AppError = require('../utils/appError')

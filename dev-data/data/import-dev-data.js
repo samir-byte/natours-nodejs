@@ -10,7 +10,7 @@ const User = require('../../models/userModel');
 dotenv.config({ path: './config.env' });
 
 // Access the MongoDB database path and replace the password variable in the string
-console.log(process.env.DATABASE)
+// console.log(process.env.DATABASE)
 const DB = process.env.DATABASE.replace(
     '<PASSWORD>',
     process.env.DATABASE_PASSWORD
